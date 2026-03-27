@@ -1,0 +1,140 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile information and safety status",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "SAFE-XXXXXX unique identifier" },
+        "authUid": { "type": "string", "description": "Firebase Auth UID" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "userId": { "type": "string" },
+        "dateOfBirth": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "country": { "type": "string" },
+        "state": { "type": "string" },
+        "district": { "type": "string" },
+        "aboutMe": { "type": "string" },
+        "profilePhoto": { "type": "string" },
+        "rating": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "restricted", "banned"] },
+        "restrictionExpiresAt": { "type": "number" },
+        "visibility": { "type": "string", "enum": ["public", "private", "friends"] },
+        "termsAccepted": { "type": "boolean" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "authUid", "fullName", "email", "userId", "rating", "status", "termsAccepted", "createdAt"]
+    },
+    "AuthMapping": {
+      "title": "Auth Mapping",
+      "description": "Maps Firebase Auth UID to SAFE-XXXXXX ID",
+      "type": "object",
+      "properties": {
+        "safeId": { "type": "string" }
+      },
+      "required": ["safeId"]
+    },
+    "Chat": {
+      "title": "Chat Session",
+      "description": "Direct or group chat session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "updatedAt": { "type": "number" },
+        "type": { "type": "string", "enum": ["direct", "group"] },
+        "name": { "type": "string" }
+      },
+      "required": ["id", "participants", "updatedAt", "type"]
+    },
+    "Message": {
+      "title": "Chat Message",
+      "description": "Message sent in a chat session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "maskedText": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "voice", "image", "video"] },
+        "mediaUrl": { "type": "string" },
+        "isFlagged": { "type": "boolean" },
+        "toxicityScore": { "type": "number" },
+        "explanation": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "senderId", "senderName", "text", "type", "timestamp"]
+    },
+    "Friend": {
+      "title": "Friend",
+      "description": "Friend relationship",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "userId": { "type": "string" },
+        "addedAt": { "type": "number" }
+      },
+      "required": ["uid", "fullName", "userId", "addedAt"]
+    },
+    "FriendRequest": {
+      "title": "Friend Request",
+      "description": "Pending friend request",
+      "type": "object",
+      "properties": {
+        "fromUid": { "type": "string" },
+        "fromFullName": { "type": "string" },
+        "fromUserId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected"] },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["fromUid", "fromFullName", "fromUserId", "status", "timestamp"]
+    },
+    "Community": {
+      "title": "Community",
+      "description": "Public community domain",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "memberCount": { "type": "number" },
+        "activeCount": { "type": "number" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "name", "memberCount", "activeCount", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents"
+    },
+    "/authMappings/{authUid}": {
+      "schema": "AuthMapping",
+      "description": "Mapping from Firebase Auth UID to SAFE-XXXXXX ID"
+    },
+    "/users/{userId}/friends/{friendId}": {
+      "schema": "Friend",
+      "description": "User's friends list"
+    },
+    "/users/{userId}/friendRequests/{requestId}": {
+      "schema": "FriendRequest",
+      "description": "Incoming friend requests"
+    },
+    "/chats/{chatId}": {
+      "schema": "Chat",
+      "description": "Chat session documents"
+    },
+    "/chats/{chatId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages within a chat session"
+    },
+    "/communities/{communityId}": {
+      "schema": "Community",
+      "description": "Public community domains"
+    }
+  }
+}
